@@ -1,0 +1,250 @@
+body{
+  background-color: #ffffee;
+}
+h1{
+  font-size:20pt;
+  font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+  width:100%;
+  background-color: #31170C;
+  color:#E38F37;
+  
+  
+}
+h2 {
+	color: #1A1608;
+	
+}
+.numbfounddiv{
+  font-size:12pt;
+}
+.returns, .explanation{
+   font-size:10px;
+   font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+}
+.explanation{
+	font-size:14px;
+}
+#itemsearchreturnslist{
+	display: none;
+	width: 400px;
+	/* border: 1px solid brown */
+	/*max-height: 400px;*/
+	background-color: white;
+	/*padding: 20px;*/
+	overflow: scroll; 
+	 font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+	 text-align:left; 
+	 margin-left: 5px;
+	 margin-bottom:5px;
+	 float:left;
+	 }
+#searchparameter{
+	font-size:12px;
+}
+#searchinfodiv{
+	width:100%;
+	background-color: #AF031B;
+	font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+	color: #FFDFB9;
+	font-size:16px;
+}
+#currentclassdiv{
+	background-color: #D44211;
+	font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+	color: #FFDFB9;
+	font-size:16px;
+	left: 450px;
+	position:absolute;
+}
+#currentsearchdiv{
+	background-color: #D44211;
+	font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+	color: #FFDFB9;
+	font-size:16px;
+	text-align:left;
+}
+#treediv{
+	
+	float:left;
+	left: 450px;
+	position:absolute;
+	
+}
+.subjphrase{
+	/*text-decoration:underline;*/
+	color:black;
+	background-color: #BEFFC7;
+	border: 1px solid #3C503E;
+}
+
+.booksbtn{
+	background-color: #FFFF79;
+	border: 1px solid #81A770;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+ 
+.resultdiv{
+  	border: 1px solid #103B00;
+  	margin-bottom: 5px;
+  	padding: 5px;
+  	font-size:10px;
+  	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+  
+}
+.nolcclass{
+  font-size:10pt;
+}
+.locclass,.bktitle, .bkauthor{
+  font-size:10pt;
+  font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+  /*border: 1px solid black;*/
+}
+.bktitle{
+	font-style:italic;
+}
+.locclass_selected{
+	border: 3px solid #FF845A;
+}
+.parentspan{
+  border: 1px solid blue;
+  background-color: #AABBCC;
+}
+
+.parentel{
+
+    padding-left: 20px; 
+} 
+
+.parentel:first-letter
+{
+     margin-left: -20px;
+}
+
+.branch{
+	margin-left: 40px;
+}
+#oneline{
+	vertical-align: bottom;
+}
+#searchbox{
+	font-size:14px;
+	font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+	background-color: #F3FFFD;
+	height: 20px;
+	width:300px;
+	color:green;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	width: 200px;
+	position:relative;
+	top: 5px;
+	
+	
+}
+#doit{
+  	font-size:15px;
+  	background-color: #DDFFC8;
+  	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+p{
+  font-family: "Helvetica Neue",Geneva,Arial,Sans Serif;
+  font-size: 14pt;
+  text-align:left;
+}
+.bookcountclass{
+	font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+	font-size: 12px;
+	color: #511D00;
+}
+
+.arrow_box,.lastelement {
+	line-height: 1.5;
+	position: relative;
+	color: #475F39;
+	border: 1px solid #475F39;
+	border-bottom-right-radius: 7px;
+	border-top-right-radius: 7px;
+	background-color: #D7FFD5;
+	padding: 2px;
+	text-align:left;
+	font-family:"Helvetica Neue",Geneva,Arial,Sans Serif;
+	font-size: 12px;
+	cursor:pointer;
+	
+}
+.lastelement{
+    background-color:#C9C9C9;
+    color: #505050;
+}
+.spacer{
+	width:50px;
+}
+.leaves{
+  cursor:pointer;
+}
+
+.nobackground{
+	background-color: white;
+}
+
+#explans{
+  width:600px;
+  border-width: 1px;
+  font-family: Helvetica,Geneva,Arial,Sans Serif;
+  color: #4E4E4E;
+  margin-left:100px;
+  font-size: 12px;
+  }
+  
+
+ #nextbtn{
+ 	border: 1px solid #0B5001;
+ 	color: #BEFFAE;
+ 	background-color: #0F5420;
+ 	width: 70px;
+ 	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+ 	font-size: 14px;
+ 	cursor: pointer;
+ 	padding: 7px;
+ }
+
+#loading {
+   
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .5 ) 
+                url('../images/waiting.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+
+body.loading .modal {
+    display: block;
+}
+
+#parentil{
+	text-indent: -20px;
+}

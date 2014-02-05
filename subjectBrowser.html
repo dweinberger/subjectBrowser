@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+
+<!-- Library of Congress Subject Browser
+**   Uses the LibraryCloud API to browse items in the Harvard University Library
+**      by Library of Congress Class names.
+**   Written by a non-developer at the Harvard Library Innovation Lab,
+**      so pardon the lack of skill, and don't blame the Lab for it.
+**   This is presented as open source software.
+**   November 11, 2013
+**   Update: Feb. 5, 2014
+-->
+
+<!-- License
+Dual licensed under the MIT license (below) and GPL license.
+
+GPL License
+http://www.gnu.org/licenses/gpl-3.0.html
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+This permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<title>Subject Browser</title> 
+
+	<link rel="stylesheet" href="css/subjectBrowser.css" type="text/css" /> 
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon"> 
+
+	<!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>-->
+
+   
+     <script type="text/javascript" src="./includes/jquery-1.10.2.min.js"></script>
+     
+	<!-- qTip for title bubbles -->
+	<link type="text/css" rel="stylesheet" href="./includes/jquery.qtip.custom/jquery.qtip.css" />
+	<!-- Include either the minifed or production version, not both -->
+	<script type="text/javascript" src="./includes/jquery.qtip.custom/jquery.qtip.min.js"></script>
+ 
+ 	<script type="text/javascript" src="js/subjectBrowser04.js"></script> 
+ 
+<script>
+   $( document ).ready(function() {
+	  init()
+   });
+</script>
+
+</head> 
+<body> 
+
+
+<h1>&nbsp;&nbsp;LC Subject Browser [demo/prototype]</h1>
+
+
+ 
+<p>Browse from one book to more books in the tree of Library of Congress Subjects. &nbsp;&nbsp;<span onclick="toggleExplanation()" class="explanation" id="explanlabel" style="text-decoration:underline;color:blue">More...</span></p> 
+<div id="explans" style="display:none;"> 
+	<p class="explanation">Begin by searching for books by keyword (a general purpose search, usually for some topic). Each book shows you its Library of Congress class name, along with that class' parents all the way back to the root. Click on a class name to see its children. Click on the icon that looks like leaves to retrieve all the books in HOLLIS directly in that class. (The number next to the leaves tells you how many books that is. Note that you will only retrieve items directly in that class, not items in subclasses.)
+	<p class="explanation">If the box next to the search box is clicked, you'll only see books in that class that have that keyword, which may be none.</p>
+	<p class="explanation">The last item in a branch is grayed out because you're already seeing its children in the list below it.</p>
+	<p class="explanation">Works are ranked by StackScore, a rough measure of how often they have been used by the Harvard community.</p>
+	<p class="explanation">This demo app was written by a non-developer in the <a href="http://librarylab.law.harvard.edu">Harvard Library Innovation Lab</a>. It is not robust software. </p><p class="explanation"> The metadata is maintained by <a href="http://librarycloud.harvard.edu">LibraryCloud</a>. The code can be found at http://www.github.com/harvard-lil/subjectBrowser [TK]. If you have questions or want to report bugs, please contact David Weinberger at self@evident.com</p>
+</div>
+
+<!-- UI -->
+<div id="ui">
+	<!-- hidden div to track current search term -->
+	<div id="searchstatus" searchterm="" classterm="" startingoffset="0" includesearch="FALSE" style="display:'none'"></div>
+	
+	<p>Keyword: <textarea id="searchbox"></textarea> 
+	<input type="button" id="doit" onclick="fetchItems('','SEARCHBTN')" value="Find items"></input>
+	<span style="font-size: 14px">(Try: 
+		<span style="text-decoration:underline;color:blue; cursor:pointer;" onclick='tryOut("evolution")'>evolution</span> or 
+		<span style="text-decoration:underline;color:blue;cursor:pointer;" onclick='tryOut("poetry")'>poetry</span></span>.) 
+	<input type="checkbox"  id="searchcheckbox" ><span style="font-size:12px">Use search term to filter subject search results</span></input>
+	</p>
+</div>	
+
+<div style="clear:all"></div>
+	
+
+<!-- Class of current item -->
+<div id="searchinfodiv">
+	Search: 
+	<span id="currentsearchdiv"></span>
+  	
+	<span id="currentclassdiv">	Class: 	</span>
+</div>
+<div style="clear:both"></div>
+
+<!--item returns list -->
+<div id="itemsearchreturnslist">
+	<p>
+	<span class="returns"></span>
+	</p>
+	
+</div>
+
+<!-- tree goes here -->
+<div id="treediv" class="treedivclass">
+</div>
+
+<div id="loading" style="display:none"></div> <!-- loading symbol -->
+</body> 
+</html>
