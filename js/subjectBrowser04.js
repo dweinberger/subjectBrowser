@@ -271,168 +271,14 @@ function fetchItems(searchterm,whichbtn){
 	
 		resultsdiv.appendChild(nextbtnp);
 	}
-
-}
-
-function fetchItems_orig(classterm,whichbtn){
-	// gets list of books from Hollis
 	
-	var resp, data, searchterm;
-	
-	
-	searchterm = $("#searchbox").val();
-	var priorsearchterm = $("#currentsearchdiv").text(); // last keyword search we did
-	//$("#currentsearchdiv").text(searchterm); // set new searchterm
-	
-	var displayclassterm = getDisplayName(classterm,60);
-	
-	// If it's from a searchbox click, search all classes for this keyword
-	if (classterm =="[[SEARCHBOX]]"){	
-		classterm = "[[NO CLASS]]";
-		// blank the treediv
-		$("#treediv").html("");
-		var displaysearchterm = getDisplayName(searchterm,20);
-		$("#currentsearchdiv").text(displaysearchterm); // update display of searchterm
-		$("#currentsearchdiv").attr("title",searchterm);
-		//$("#currentclassdiv").html("");
-		}
-	else { // It's from the tree, then Search for items in a class, filtering on a search keyword if any
-		   // Ignore search term if the checkbox isn't checked
-		var useSearchTerm = $("#searchcheckbox").is(":checked");
-		if ((searchterm === null) || (useSearchTerm == false)){ // No search term
-			searchterm = "[[NO SEARCHTERM]]";
-			$("#currentsearchdiv").text(displayclassterm); // set new searchterm
-			$("#currentsearchdiv").attr("title",classterm);
-		}	
-		else {
-		     $("#currentsearchdiv").text(displaysearchterm); // set new searchterm
-		     $("#currentsearchdiv").attr("title",searchterm);
-		}
-	
-
-    // get the index into the search
-    var nextbtn = document.getElementById("nextbtn");
-    if (nextbtn === null){
-    	var previousStartingPoint = 0;
-    }
-    else {
-    	// clicked on class leaves, so starting a new searchterm
-    	if (classterm != "[[NO CLASS]]"){
-    		var previousStartingPoint=0;
-    	}
-    	else { // clicked on search btn or next btn
-			var previousStartingPoint = parseInt(nextbtn.getAttribute("lastentry")); // previous starting point
-		}
-		}	
-	}
-	
-	data = {keyword : searchterm, classterm:classterm, startingPoint:previousStartingPoint + 25};
-	resp = callAPI(data);
-	
-	// clear the box
-	var resultsdiv= $("#itemsearchreturnslist")[0];
-	// make sure it's visible
-	resultsdiv.style.display="block";
-	resultsdiv.innerHTML="";
-	// display the class
-	if (classterm == "[[NO CLASS]]") { var displayclass = "No class selected."} 
-		else{var displayclass = classterm;}
-	$("#currentclassdiv").text("Current class: " + displayclass);
-
-	// turn into array
-	var barray = JSON.parse(resp);
-	
-	// ---- DISPLAY the items with a link if they have loc_call_num_subject
-	var eclass,itemdiv,itemspan,auntspan,kidspan,sibspan,oneresult, creators;
-	
-	for (var i = 0; i < barray.docs.length; i++){
-		itemdiv = document.createElement("div");
-		itemdiv.setAttribute("class","resultdiv");
-		itemdiv.setAttribute("id","result" + i);
-		
-		itemspan = document.createElement("span");
-		itemdiv.appendChild(itemspan);
-		// is there a loc call number?
-		oneresult = barray.docs[i];
-		if ((oneresult.loc_call_num_subject !== undefined) && (oneresult.loc_call_num_subject !== null)){
-			// display the subject
-			var subjspan = document.createElement("span");
-			// embed the data
-			itemspan.setAttribute("class","locclass");
-			itemdiv.setAttribute("lcclass", oneresult.loc_call_num_subject);	
-			//buttonize the subject class string
-			var linkedstring = buttonizeSubjectClassString(oneresult.loc_call_num_subject,"result" + i);
-			itemdiv.appendChild(linkedstring);	
-			//itemdiv.innerHTML = itemdiv.innerHTML + linkedstring;
-			// create the buttons
-			//createButtons(itemdiv,oneresult.loc_call_num_subject );
-		}
-		else {
-			itemspan.setAttribute("class","nolocclass");
-		}
-		// add authors
-		if (oneresult.creator !== undefined){
-		creators = oneresult.creator.join();
-		}
-		else {creators = "no author listed";}
-		// truncate authors if too long
-		if (creators.length > 30) {
-			creators = creators.substr(0,30) + "...";
-			}
-		itemspan.innerHTML = "<span class='bktitle'>" + oneresult.title + "</span>. <span class='bkauthor'>" + creators + "</span>";	
-		// create hover text
-		var hover= oneresult.title + " by " + creators + "<br>Publisher: " +oneresult.publisher;
-		hover = hover +   "<br>Date: " + oneresult.pub_date_numeric + "<br>Pages: " + oneresult.pages_numeric + "<br>StackScore: " + oneresult.shelfrank;
-		itemspan.setAttribute("title", hover);
-		
-		// create stacklife link
-		var stacklifeid = oneresult.id;
-		var stacklifeshortname = oneresult.title_link_friendly;
-		if ((stacklifeid != undefined) && (stacklifeshortname != undefined)){
-			var stacklifeurl = "http://stacklife.harvard.edu/item/" + stacklifeshortname + "/" + stacklifeid;
-			var stacklifelink = document.createElement("a");
-			stacklifelink.setAttribute("class","stacklifelink");
-			stacklifelink.setAttribute("href", stacklifeurl);
-			stacktext = document.createElement("img");
-			stacktext.setAttribute("src","./images/out.jpg");
-			stacktext.setAttribute("width","12px");
-			stacktext.setAttribute("height","12px");
-			stacklifelink.appendChild(stacktext);
-			itemspan.appendChild(stacklifelink);
-		}
-		resultsdiv.appendChild(itemdiv);
-		
-	}
-	
-	// -- add the Next button
-	var nextbtnp = document.createElement("p");
-	var nextbtn = document.createElement("span");
-	nextbtn.setAttribute("class","nextbtn");
-	// If it's a new search for items then reset search offset
-	if ((priorsearchterm != searchterm) && (searchterm != "")){
-		var ps = 0;
-		
-	}
-	else { // it's a re-search term so increment the search offset
-		var ps = parseInt(previousStartingPoint);
-	}
-	var nextstart = ps + 25;
-	var nextend = parseInt(nextstart) + parseInt(25) ;
-	var btntext = document.createTextNode("Next 25 (" + nextstart + " - " +  nextend + ")");
-	nextbtn.setAttribute("lastentry",nextstart);
-	nextbtn.setAttribute("onclick","fetchItems('" + searchterm + "', 'NEXTBTN')");
-	nextbtn.setAttribute("id","nextbtn");
-	nextbtn.setAttribute("classname",classterm);
-	nextbtn.setAttribute("searchterm",searchterm);
-	nextbtn.appendChild(btntext);
-	nextbtnp.appendChild(nextbtn);
-	resultsdiv.appendChild(nextbtnp);
-	
-	 // qtip to style the title hover popups
+	// qtip to style the title hover popups
     $('[title]').qtip({
       style: { classes: 'qtip-cream qtip-rounded' }
     });
+
 }
+
 
 function buttonizeSubjectClassString(s,id){
 
@@ -468,6 +314,7 @@ function buttonizeSubjectClassString(s,id){
 		arrow_box.setAttribute("class","arrow_box");
 		subjsentence.appendChild(arrow_box);
 	}
+
 	
 	return subjsentence;
 	
@@ -649,7 +496,12 @@ function buildTree(json,which,lcclass){
 				
 	   	}
    }
+   	  	 // qtip to style the title hover popups
+    $('[title]').qtip({
+      style: { classes: 'qtip-cream qtip-rounded' }
+    });
 	  
+ 
 	
 }
 
