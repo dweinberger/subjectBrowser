@@ -10,6 +10,7 @@ error_log("Searchterm: .$searchterm relative: $relative");
 
 // replace spaces with pluses
 $searchstring = str_replace(" ","%20",$searchterm);
+//$searchstring = str_replace("'","\'",$searchterm);
 
 // works http://librarycloud.law.harvard.edu/v1/api/lc_class/?filter=parent_class:Geography.%20Anthropology.%20Recreation%20--%20Recreation.%20Leisure
 //  nopehttp://librarycloud.law.harvard.edu/v1/api/lc_class/?filter=parent_class:Geography.%20Anthropology.%20Recreation%20--%20Recreation.%20Leisure%20--%20Sports%20--%20Ball%20games%20--%20Baseball

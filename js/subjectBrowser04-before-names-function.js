@@ -71,17 +71,15 @@ function getDisplayName(s,maxlength){
 }
 
 function createNames(s){
-	names = new Array();
 	names["html"] = escapeHtmlEntities(s);
 	names["displayPathShortest"] =  getDisplayName(names["html"],30);
 	names["displayPathShort"] =  getDisplayName(names["html"],60);
 	names["lastName"] = lastBranchOnly(s);
 	names["lastNameHtml"] = escapeHtmlEntities(names["lastName"]);
 	var php = s.replace(/\s/g, '%20');
-	php = php.replace(/'/g, "\\'");
+	php = php.subj2 = subj2.replace(/'/g, "\\'");
 	php = php.replace(/"/g,'"\\"');
 	names["php"] = php;
-	return names;
 	
 }
  
@@ -130,9 +128,8 @@ function fetchItemsFromLeaf(classterm,searchterm,offset){
 			var searchterm = "";
 		}
 		// set display
-		var names = createNames(classterm);
 		var displaysearchterm = getDisplayName(searchterm,20);
-		var displayclassname = names["displayPathShort"];
+		var displayclassname = getDisplayName(classterm,60);
 		var displaytext = displayclassname;
 		if (searchterm != "") {
 			displaytext = displaytext.substr(0,15) + " [" + displaysearchterm.substr(0,15) + "]";
@@ -345,7 +342,6 @@ function greaterThanDisplay(s){
 function fetchAndCheckChildClasses(id,which,subj){
 	// get the specified relatives
 	
-	var names = createNames(subj);
 	// get the result containing this button
 	var itemdiv = document.getElementById(id);
 	if (id.indexOf("result") > -1) { // if  clicked within results list
@@ -358,7 +354,7 @@ function fetchAndCheckChildClasses(id,which,subj){
 		var resultsubj = getEnglishNameFromRaw(subj);
 		
 	}
-	$("#currentclassdiv").text(names["displayPathShort"]);
+	$("#currentclassdiv").text(getDisplayName(resultsubj,60));
 	
   	
   	  // remove current selection if clicked within the book list
@@ -501,15 +497,15 @@ function buildTree(json,which,lcclass){
    		var escapedkidclass = kidClass.replace(/'/g, "&#39;");
    		escapedkidclass = escapedkidclass.replace(/"/g, "&#34;");
    		var kidslcclass = lcclass + " -- " + escapedkidclass; // add the child to the subj
-   		var fetchrel = "fetchAndCheckChildClasses('" + ("treelist" + i) + "','CHILDREN','" + names["php"] + "')";
+   		var fetchrel = "fetchAndCheckChildClasses('" + ("treelist" + i) + "','CHILDREN','" + names[" + "')";
 		linkspan.setAttribute("onclick",fetchrel);
-		linkspan.setAttribute("title",names["html"]); // hover
-		linkspan.innerHTML = names["lastNameHtml"];
+		linkspan.setAttribute("title",escapedkidclass);
+		linkspan.innerHTML = displaychildname;
 
 		// attach book button (leaves)
 		showEmpties = true;
 		if ((showEmpties == true) || (kidItemCount > 0)){
-			var bookspan = createLeavesButton(kidClass,kidItemCount );
+			var bookspan = createBookButton(kidClass,kidItemCount );
 			// create container span so that clicks work for both lcclass and book icon
 			var contspan = document.createElement("span");
 		
@@ -529,14 +525,14 @@ function buildTree(json,which,lcclass){
 }
 
 
-function createLeavesButton(subj,count){
+function createBookButton(subj,count){
 	// Create book icon that fetches book for that class
 	// called when creating the tree
 				
 	kidspan= document.createElement("span");
     kidspan.setAttribute("class","bookspan");
     if (count > 0){
-    	
+    	kidspan.setAttribute("onclick","fetchItems('" + subj +"','LEAF')");
     	var leafimg = "images/leaves.png";
     }
     else {
@@ -554,9 +550,7 @@ function createLeavesButton(subj,count){
     ctspan.setAttribute("class","bookcountclass");
     ctspan.innerHTML=count;
     kidspan.appendChild(ctspan);
-    if (count > 0){
-    	kidspan.setAttribute("onclick","fetchItems('" + subj +"','LEAF')");
-   }
+
    return kidspan;
 		
 }
@@ -649,3 +643,57 @@ function toggleExplanation(){
      }
 }
 
+//-------------------- UNUSED
+
+// ------ Fetch Relatives
+function fetchRelatives_unused(id,which,subj){
+	// get the specified relatives
+		
+	// get the result containing this button
+	if (id !== "NONE"){
+		var itemdiv = document.getElementById(id);
+	 // display current class
+	 // get the lcclass attr of the parent
+		var resultsubj = itemdiv.getAttribute("lcclass");
+	}
+	else {
+		var resultsubj = getEnglishNameFromRaw(subj);
+		subj = resultsubj;
+	}
+	$("#currentclassdiv").text(resultsubj);
+	
+	
+  	   // if aunts, we're looking for the siblings of the current lcclass
+  	   // so remove the last delimiter and basically do a siblings search
+  	   if (which == "AUNTS"){
+  	   	subj = removeTail(subj);
+  	   	subj = removeTail(subj);
+  	   }
+  	   
+  	
+  	  // remove current selection if clicked within the book list
+  	  if (id !== "NONE"){
+		  $('.locclass_selected').removeClass('locclass_selected').addClass('locclass');
+		   // mark the current item clicked on
+		 var itemdiv = document.getElementById(id);
+		 // itemdiv.parentNode.setAttribute("class", "locclass_selected");
+		  $(itemdiv).addClass('locclass_selected');
+  	  }
+  	 
+	   var subj2 =  subj.replace(/\s/g, '%20');
+ 	// call the php that gets the data from LibraryCloud
+	// keep this non-async so the value of respo doesn't get wiped out
+
+	var respo;
+	$.ajax({
+  		type: "POST",
+  		data: {searchterm : subj2, relative : which},
+ 		 url: './php/fetchRelatives.php',
+ 		 async: false,
+ 		 success: function(r,mode){
+                respo = r;
+                showRelations(itemdiv,respo,which, subj2);
+            }
+  });
+  
+}

@@ -12,6 +12,8 @@ $startingPoint = $_POST['startingPoint'];
 
 $sclassterm = str_replace(" ","%20",$classterm);
 $skeyword = str_replace(" ","+",$keyword);
+//debug
+//$classterm = "Science%20--%20Biology%20(General)%20--%20Cytology%20--%20General%20works,%20treatises,%20and%20textbooks%20--%201970-";
 
 error_log("classterm: .$classterm keyword . $keyword startingPoinit: $startingPoint");
 

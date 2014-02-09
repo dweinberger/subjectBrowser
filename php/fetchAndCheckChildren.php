@@ -108,6 +108,6 @@ if ($classlist) {
 
 echo json_encode($classarray);
 
-//echo $file;
+//echo $classterm;
 
 ?>
