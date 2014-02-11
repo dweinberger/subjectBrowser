@@ -509,7 +509,7 @@ function buildTree(json,which,lcclass){
 		// attach book button (leaves)
 		showEmpties = true;
 		if ((showEmpties == true) || (kidItemCount > 0)){
-			var bookspan = createLeavesButton(kidClass,kidItemCount );
+			var bookspan = createLeavesButton(names["php"],kidItemCount );
 			// create container span so that clicks work for both lcclass and book icon
 			var contspan = document.createElement("span");
 		
