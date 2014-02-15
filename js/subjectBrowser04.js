@@ -26,7 +26,56 @@ function init(){
        
     }
   });
+  
+  //  buid checkboxes of all libraries
+  
+  var libsdiv = document.getElementById("liblist");
+  var libs = buildLibraryArray();
+  var abbrev="",full="";
+  for (var index in libs){
+  	var spn = document.createElement("span");
+  	spn.setAttribute("class","checkclass");
+  	abbrev = index;
+  	full =   libs[index];
+  	//	<label><input type="checkbox" value="PEA" checked /> Ophthalmology</label>
+
+  	var btnstr = "<span class='checkclass'><label><input type='checkbox' name='libcheck' value='" + abbrev + "' />" + full + "</label></checkclass>";
+  	spn.innerHTML = btnstr;
+  	 libsdiv.innerHTML = libsdiv.innerHTML + btnstr;
+  }
+ 
+
  	
+}
+
+// add checked libraries to the menu
+function addLibs(){
+		// get the options on the drop down menu
+		var menu = document.getElementById('libselectlist');
+		var opts = menu.options;
+		// get all the values on the drop down menu so we can check for dupes
+		var menuvalues = new Array();
+		for (var i=0; i < opts.length; i++){
+			var vval = opts[i].value;
+			menuvalues.push(vval);
+		};
+	
+		// get all selected boxes
+		var chosens = $("input:checkbox[name=libcheck]:checked");
+		// loop through checked boxes
+		for (var i=0; i < chosens.length; i++){
+			var full = chosens[i].labels[0].innerText;
+			var abbrev =chosens[i].value;
+			// is this abbrev already on the drop down menu?
+			var idx = $.inArray(abbrev, menuvalues); // is it in array?
+			if (idx == -1) {
+				var option = document.createElement("option");
+				option.setAttribute("value",abbrev);
+				option.text=full;
+				menu.appendChild(option);
+			}
+		}
+		rollupdown("liblist","HIDE");
 }
 
 function tryOut(s){
@@ -42,6 +91,12 @@ function callAPI(dataobj){
 	   var respo; 
 	   var searchterm="";
 	   $("#loading").show();
+	   
+	    // add library facet
+	   	var dropdown = document.getElementById("libselectlist");
+		var lib = dropdown.options[dropdown.selectedIndex].value;
+	  	dataobj.library = lib;
+	   
  	// call the php that gets the data from LibraryCloud
 	// keep this non-async so the value of respo doesn't get wiped out
 	// keyword, classterm are the two parameters
@@ -71,10 +126,11 @@ function getDisplayName(s,maxlength){
 }
 
 function createNames(s){
-	names = new Array();
+	var names = new Array();
+	names["raw"] = s;
 	names["html"] = escapeHtmlEntities(s);
-	names["displayPathShortest"] =  getDisplayName(names["html"],30);
-	names["displayPathShort"] =  getDisplayName(names["html"],60);
+	names["displayPathShortest"] =  getDisplayName(s,30);
+	names["displayPathShort"] =  getDisplayName(s,60);
 	names["lastName"] = lastBranchOnly(s);
 	names["lastNameHtml"] = escapeHtmlEntities(names["lastName"]);
 	var php = s.replace(/\s/g, '%20');
@@ -142,8 +198,8 @@ function fetchItemsFromLeaf(classterm,searchterm,offset){
 		}
 		$("#currentsearchdiv").text(displaytext); 
 		$("#currentsearchdiv").attr("title","CLASS: " + classterm + " TERM: " + searchterm); // set new searchterm
-		$("#currentclassdiv").text(displayclassname);
-		$("#currentclassdiv").attr("title",classterm);
+		$("#currentclassdiv").text(names["displayPathShort"]);
+		$("#currentclassdiv").attr("title",names["html"]);
 		
 		//Do the API call
 		data = {keyword : searchterm, classterm:classterm, startingPoint:offset};
@@ -164,6 +220,9 @@ function fetchItems(searchterm,whichbtn){
 		resp = fetchItemsFromSearchbox(searchterm,0);
 		// set up for Next button
 		currentStartingIndex=0;
+		// clear the tree
+		document.getElementById("treediv").innerHTML="";
+		$("#currentclassdiv").text("Class: ");
 	}
 	
 	//-- Start from leaf
@@ -355,10 +414,11 @@ function fetchAndCheckChildClasses(id,which,subj){
 		var resultsubj = subj;
 	}
 	else { // clicked within tree
-		var resultsubj = getEnglishNameFromRaw(subj);
+		var resultsubj = names["php"]; // getEnglishNameFromRaw(subj);
 		
 	}
 	$("#currentclassdiv").text(names["displayPathShort"]);
+	$("#currentclassdiv").attr("title",names["raw"]);
 	
   	
   	  // remove current selection if clicked within the book list
@@ -377,18 +437,22 @@ function fetchAndCheckChildClasses(id,which,subj){
 	   		subj2 = "*";
 	   	}
 	   
-	   
+	// facet on a library?
+	// http://librarycloud.harvard.edu/v1/api/item/?filter=keyword:internet&filter=holding_libs:WID
+	// WID, MCZ, TOZ, NET, CAB, CRL, DIV, MED,LAW,LAM
+	var dropdown = document.getElementById("libselectlist");
+	var lib = dropdown.options[dropdown.selectedIndex].value;
+	
+
  	// call the php that gets the data from LibraryCloud
-	// keep this non-async so the value of respo doesn't get wiped out
 	
 	
 	$("#loading").show();
 	var respo;
 	$.ajax({
   		type: "POST",
-  		data: {classterm  : subj2},
+  		data: {classterm  : subj2, library : lib},
  		 url: './php/fetchAndCheckChildren.php',
- 		//  async: false,
  		 success: function(r,mode){
                 respo = r;
                 $("#loading").hide();
@@ -501,7 +565,7 @@ function buildTree(json,which,lcclass){
    		var escapedkidclass = kidClass.replace(/'/g, "&#39;");
    		escapedkidclass = escapedkidclass.replace(/"/g, "&#34;");
    		var kidslcclass = lcclass + " -- " + escapedkidclass; // add the child to the subj
-   		var fetchrel = "fetchAndCheckChildClasses('" + ("treelist" + i) + "','CHILDREN','" + names["php"] + "')";
+   		var fetchrel = "fetchAndCheckChildClasses('" + ("treelist" + i) + "','CHILDREN','" + names["raw"] + "')";
 		linkspan.setAttribute("onclick",fetchrel);
 		linkspan.setAttribute("title",names["html"]); // hover
 		linkspan.innerHTML = names["lastNameHtml"];
@@ -509,7 +573,7 @@ function buildTree(json,which,lcclass){
 		// attach book button (leaves)
 		showEmpties = true;
 		if ((showEmpties == true) || (kidItemCount > 0)){
-			var bookspan = createLeavesButton(names["php"],kidItemCount );
+			var bookspan = createLeavesButton(names["raw"],kidItemCount );
 			// create container span so that clicks work for both lcclass and book icon
 			var contspan = document.createElement("span");
 		
@@ -643,9 +707,21 @@ function toggleExplanation(){
  var div = document.getElementById("explans");
  if (div.style.display=="none") {
      $(div).show("slow");
+     $("#explanlabel").text("...Less");
      }
      else {
      $(div).hide("slow");
+     $("#explanlabel").text("More...");
      }
+}
+
+function rollupdown(e, which){
+	var id = "#" + e;
+	if (which == "HIDE"){
+	$(id).hide(400);
+	}
+	else {
+	$(id).show(400);
+	}
 }
 

@@ -38,7 +38,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    
      <script type="text/javascript" src="./includes/jquery-1.10.2.min.js"></script>
      <script type="text/javascript" src="./includes/escapeHtmlEntities.js"></script>
-     
+     <script type="text/javascript" src="./includes/buildLibraryArray.js"></script>
 	<!-- qTip for title bubbles -->
 	<link type="text/css" rel="stylesheet" href="./includes/jquery.qtip.custom/jquery.qtip.css" />
 	<!-- Include either the minifed or production version, not both -->
@@ -63,8 +63,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <p>Browse from one book to more books in the tree of Library of Congress Subjects. &nbsp;&nbsp;<span onclick="toggleExplanation()" class="explanation" id="explanlabel" style="text-decoration:underline;color:blue">More...</span></p> 
 <div id="explans" style="display:none;"> 
 	<p class="explanation">Begin by searching for books by keyword (a general purpose search, usually for some topic). Each book shows you its Library of Congress class name, along with that class' parents all the way back to the root. Click on a class name to see its children. Click on the icon that looks like leaves to retrieve all the books in HOLLIS directly in that class. (The number next to the leaves tells you how many books that is. Note that you will only retrieve items directly in that class, not items in subclasses.)
-	<p class="explanation">If the box next to the search box is clicked, you'll only see books in that class that have that keyword, which may be none.</p>
-	<p class="explanation">The last item in a branch is grayed out because you're already seeing its children in the list below it.</p>
+	<p class="explanation">(<span onclick="rollupdown('LCSH','SHOW')" style="text-decoration:underline;color:blue">Click</span> for a Teachable Moment about Library of Congress Subject Headings vs. Class Numbers.)</p>
+	<div id="LCSH" style="display:none">
+		<p class="explanation">Every book that comes to the Library of Congress is given at least one Subject Heading (LCSH), and almost always more than one. For example, Darwin's <em>Origin of Species</em> is sensibly classified under "Evolution," "Natural selection," and "Evolution (Biology)." That's very helpful, but it doesn't tell you precisely  which other volumes the book ought to be placed between on the shelf. The Library Congress does that by assigning it a <a href="http://www.loc.gov/aba/cataloging/classification/">Library of Congress Classification</a> (LCC) code, which looks like the sort of letter-and-number code you're familiar with from the spines of libraries books.</p> 
+		<p class="explanation">To assign this class (LCC), typically a cataloguer will consider the complete set of subject headings (LCSH) assigned to the book,  will look at other books with overlapping sets of subject headings (LCSH), and will decide where it stands in the Library of Congress Classifications — another hierarchical system of topics, but this one designed specifically to enable the Library of Congress to figure out where to put books on shelves. These two classification systems &mdash; the Subject Headings and the Classifications &mdash; do not exactly coincide: you cannot with certainty figure out one from the other.</p>
+		<p class="explanation"> LibraryCloud, from the Harvard Library Innovation Lab, has created a service that lets an application send it a Library of Congress Classification (LCC), and will return the other LCCs on the same branch, or its parents, or its children. The app you're using does is going to LibraryCloud for that information every time you click or search. <span onclick="rollupdown('LCSH','HIDE')" style="text-decoration:underline;color:blue">Close</span></p> 
+		</div> 
+	<p class="explanation">If "Use search term to filter subject search results" is checked, you'll only see books in that class that have that keyword, which may be none. If it is unchecked, you'll see all the books in that class within the Harvard Library collection</p>
+	<p class="explanation">Choose a library from the pulldown menu to see only the items in that library's collection.</p>
 	<p class="explanation">Works are ranked by StackScore, a rough measure of how often they have been used by the Harvard community.</p>
 	<p class="explanation">This demo app was written by a non-developer in the <a href="http://librarylab.law.harvard.edu">Harvard Library Innovation Lab</a>. It is not robust software. </p><p class="explanation"> The metadata is maintained by <a href="http://librarycloud.harvard.edu">LibraryCloud</a>. The code can be found at http://www.github.com/dweinberger/subjectBrowser. If you have questions or want to report bugs, please contact David Weinberger at self@evident.com</p>
 </div>
@@ -79,9 +85,45 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	<span style="font-size: 14px">(Try: 
 		<span style="text-decoration:underline;color:blue; cursor:pointer;" onclick='tryOut("evolution")'>evolution</span> or 
 		<span style="text-decoration:underline;color:blue;cursor:pointer;" onclick='tryOut("poetry")'>poetry</span></span>.) 
+	<br />
+	
+	<!-- dropdown list of libraries -->
+	<span style="font-size: 14px">
+	&nbsp;&nbsp;Library
+	<select id="libselectlist" tabindex="1" >
+	    <option  value="NONE">All</option>
+	    <option  value="CAB">Cabot</option>
+	    <option  value="DDO">Countway Medicine</option>
+	    <option  value="DIV">Divinity</option>
+		<option  value="FOR">Environmental Info</option>
+		<option  value="MCZ">Loeb Music</option>
+		<option  value="HOU">Harv. Univ. Lib.</option>
+		<option  value="HSL">History Dept.</option>
+		<option  value="DIV">History of Science</option>
+		<option  value="LAW">Law</option>
+		<option  value="MED">Map Coll.</option>
+		<option  value="MUR">Medieval Studies</option>
+		<option  value="OPH">Near Eastern</option>
+		<option  value="RRC">Philosophy</option>
+		<option  value="SFL">Schlesinger</option>
+		<option  value="WID">Widener</option>
+		<option  value="WOL">Wolbach</option>
+	  </select>
+	  <span class="explanation" style="text-decoration:underline;color:blue" onclick="rollupdown('liblist','SHOW')"> Add libraries</span>
+	</span>
 	<input type="checkbox"  id="searchcheckbox" ><span style="font-size:12px">Use search term to filter subject search results</span></input>
 	</p>
 </div>	
+<div id="liblistcontainer">
+	<div id="liblist" style="display:none">
+	<div id="libchecks">
+		
+		<span id="addlibsbtn" onclick="addLibs()">Add checked libraries to menu</span>
+		<span id="cancellibsbtn" onclick="rollupdown('liblist','HIDE')">Never mind</span>
+	</div>
+	<h2>This section under construction for your safety and convenience. Please ignore.</h2>
+	</div>
+</div>
 
 <div style="clear:all"></div>
 	

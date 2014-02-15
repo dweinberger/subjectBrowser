@@ -6,7 +6,8 @@ error_reporting(E_ALL);
 
 
 $classterm = $_POST['classterm'];
-error_log("Original Classterm: $classterm");
+$library = $_POST['library'];
+error_log("Original Classterm: $classterm Library: $library");
 
 function getClassName($singleclass_ornate){
    $p = strrpos($singleclass_ornate,"%%",0);
@@ -67,7 +68,10 @@ if ($classlist){
    		// look each up in the item api to get a book count
    		//$class = urlencode($class);
    		$queryurl = "http://hlslwebtest.law.harvard.edu/v1/api/item/?filter=collection:hollis_catalog&filter=loc_call_num_subject:" . $class;
-   		
+   		// filter by library?
+   		if (($library != "NONE") && ($library != "MORE")){
+   			$queryurl = $queryurl . "&filter=holding_libs:" . $library;
+   		}
    		//print_r("<br>" . $queryurl);
    		curl_setopt($ch, CURLOPT_URL, $queryurl);
 		// Return the transfer as a string 

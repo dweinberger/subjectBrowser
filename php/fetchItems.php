@@ -9,6 +9,7 @@ error_reporting(E_ALL);
 $classterm = $_POST['classterm'];
 $keyword = $_POST['keyword'];
 $startingPoint = $_POST['startingPoint'];
+$library = $_POST['library'];
 
 $sclassterm = str_replace(" ","%20",$classterm);
 $skeyword = str_replace(" ","+",$keyword);
@@ -33,6 +34,10 @@ if (($classterm != "[[NO CLASS]]") && ($keyword != "[[NO SEARCHTERM]]")){
 }
 
 $data = $data . "&filter=collection:hollis_catalog&start=" . $startingPoint;
+
+if (($library != "NONE") && ($library != "MORE")){
+	$data = $data . "&filter=holding_libs:" . $library;
+}
 
 error_log("DATA: " . $data);
 
