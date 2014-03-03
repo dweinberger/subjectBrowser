@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+
+<!-- Subject Holdings
+**   Uses the LibraryCloud API to browse Library of Congress Classifications
+** 	 showing how many items within each Class are in the collection of
+**   libraries that constitute the Harvard University Library
+**     
+**   Written by a non-developer at the Harvard Library Innovation Lab,
+**    so pardon the lack of skill, and don't blame the Lab for it.
+**   This is presented as open source software.
+**   March 1, 2014
+**   - David Weinberger
+**     self@evident.com
+-->
+
+<!-- License
+Dual licensed under the MIT license (below) and GPL license.
+
+GPL License
+http://www.gnu.org/licenses/gpl-3.0.html
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+This permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<title>Subject Holdings</title> 
+
+	<link rel="stylesheet" href="css/subjectHoldings.css" type="text/css" /> 
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon"> 
+
+	<!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>-->
+
+   
+     <script type="text/javascript" src="./includes/jquery-1.11.0.min.js"></script>
+     <script type="text/javascript" src="./includes/escapeHtmlEntities.js"></script>
+     <script src="./includes/Chart.js"></script>
+     <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="excanvas.js"></script><![endif]-->
+	 <script language="javascript" type="text/javascript" src="./includes/jqplot/jquery.jqplot.min.js"></script>
+	 <link rel="stylesheet" type="text/css" href="./includes/jqplot/jquery.jqplot.min.css" />
+	 <script type="text/javascript" src="./includes/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+	 <script type="text/javascript" src="./includes/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+	 <script type="text/javascript" src="./includes/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+	 <script type="text/javascript" src="./includes/jqplot/plugins/jqplot.highlighter.min.js"></script>
+	 <script type="text/javascript" src="./includes/jqplot/plugins/jqplot.cursor.min.js"></script>
+	
+ 	<script type="text/javascript" src="js/subjectHoldings.js"></script> 
+ 
+<script>
+   $( document ).ready(function() {
+	  init()
+   });
+</script>
+
+</head> 
+<body> 
+
+
+<h1>&nbsp;&nbsp;Subject Holdings [demo/prototype]</h1>
+
+
+ 
+<p>Compare the holdings of Harvard Libraries by LC Subject Class<span onclick="toggleExplanation()" class="explanation" id="explanlabel" style="text-decoration:underline;color:blue"> More...</span></p> 
+<div id="explans" style="display:none;"> 
+	<p class="explanation">Click on the tree on the left to browse the Library of Congress Classifications. 
+	</p>
+	<p class="explanation">Click on the bar graph icon to the right of a Classifications to see which libraries at Harvard have items within that class, and how many each has. 
+	</p>
+	<p class="explanation">NOTE: The number of items is the number only at that level of the tree, not the total numer of all of the sub-branches of that branch. For example, the Classification "People" might only have 10 items, but the sub-branches of "Women" and "Men" might have thousands each. The "People" branch would only show you the 10 items at that level of the tree. 
+	</p>
+	<p class="explanation">This demo app was written by a non-developer in the <a href="http://librarylab.law.harvard.edu">Harvard Library Innovation Lab</a>. It is not robust software. </p><p class="explanation"> The metadata is maintained by <a href="http://librarycloud.harvard.edu">LibraryCloud</a>. The code can be found at http://www.github.com/dweinberger/subjectHoldings. If you have questions or want to report bugs, please contact David Weinberger at self@evident.com</p>
+</div>
+
+<!-- UI -->
+<div id="ui">
+	<!-- hidden div to track current search term -->
+	<div id="searchstatus" searchterm="" classterm="" startingoffset="0" includesearch="FALSE" style="display:'none'"></div>
+	
+	
+
+
+<!-- tree goes here -->
+<table id="2col"><tr>
+	<td>
+	<div id="treediv"></div>
+
+	<div style="clear:both"></div>
+	</td>
+	<td>
+	<!-- graph goes here -->
+	<div id="graphdiv" style="height:400px;width:900px; ">
+		<div id="chartdiv"></div>
+		<!--canvas id="Canvas" width="4" height="4"></canvas-->
+</div>
+	</td></tr>
+	<tr><td colspan="2"><p id="currentclassdiv"></p></td></tr>
+</table>
+
+
+
+
+<div id="loading" style="display:none"></div> <!-- loading symbol -->
+</body> 
+</html>

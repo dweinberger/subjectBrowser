@@ -41,7 +41,6 @@ $classlist = curl_exec($ch);
 //error_log("Got classlist: $classlist");
 
 //------------ GOES THROUGH THE CHILDREN, extracting subclass name, looking it up in item API to see how many books are in it
-//------------ GOES THROUGH THE CHILDREN, extracting subclass name, looking it up in item API to see how many books are in it
 if ($classlist){
    // look up the class names to see if there are books within it
    error_log("in classlist");
@@ -55,6 +54,7 @@ if ($classlist){
    	else {
    		$number_of_children = -1;
    	}
+   	error_log("Number of children: " . $number_of_children);
    
    for ($i=0;$i < $number_of_children; $i++){
   // for ($i=0;$i < 2; $i++){
@@ -67,18 +67,7 @@ if ($classlist){
    		//print_r("<p>DONECLASS: " . $class);
    		$class = str_replace(" ","%20",$classwithspaces);
    		//print_r("<li>" . $class);
-   		// look each up in the item api to get a book count
-   		//$class = urlencode($class);
-   		$queryurl = "http://hlslwebtest.law.harvard.edu/v1/api/item/?filter=collection:hollis_catalog&filter=loc_call_num_subject:" . $class;
    		
-   		//print_r("<br>" . $queryurl);
-   		curl_setopt($ch, CURLOPT_URL, $queryurl);
-		// Return the transfer as a string 
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-		// $output contains the output string 
-		$books = curl_exec($ch); 
-		$barray = json_decode($books,true);
-		$count = $barray["num_found"];
 		//print_r("<hr>" . $count);
 		//print_r("<li>" . $barray["num_found"]); //$count . $class);
    		//WORKS http://hlslwebtest.law.harvard.edu/v1/api/item/?filter=collection:hollis_catalog&filter=loc_call_num_subject:Science
@@ -87,12 +76,15 @@ if ($classlist){
    		//$childclases
    		$oneclassarray = array();
    		$oneclassarray["class"] = $classwithspaces;
-   		$oneclassarray["bookcount"] = $count;
+   		//$oneclassarray["bookcount"] = $count;
    		array_push($classarray,$oneclassarray);
-   	
+   		error_log($i . " child");
    }
 	
+
 }
+
+
 
 echo json_encode($classarray);
 
